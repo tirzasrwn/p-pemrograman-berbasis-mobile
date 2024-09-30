@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- define string constant -->
+    <string name="app_name">Business Card</string>
+    <string name="my_phone_number">08123456789</string>
+    <string name="twitter_handle">\@mytwitter</string>
+    <string name="my_email">myemail@gmail.com</string>
+    <string name="my_name">Tirza Sarwono</string>
+    <string name="my_title">Software Developer</string>
+</resources>

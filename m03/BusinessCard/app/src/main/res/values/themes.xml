@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.BusinessCard" parent="android:Theme.Material.Light.NoActionBar">
+        <!-- set status bar color  -->
+        <!-- <item name="android:statusBarColor">#FFC9DABF</item> -->
+        <item name="android:statusBarColor">@color/background</item>
+    </style>
+</resources>
