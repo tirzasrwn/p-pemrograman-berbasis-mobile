@@ -36,6 +36,7 @@ import id.tirzasrwn.courses.data.DataSource
 import id.tirzasrwn.courses.model.Topic
 import id.tirzasrwn.courses.ui.theme.CoursesTheme
 
+// main function
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
@@ -45,11 +46,12 @@ class MainActivity : ComponentActivity() {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier
-                        .fillMaxSize()
-                        .statusBarsPadding(),
+                        .fillMaxSize() // display maximum size of the screen
+                        .statusBarsPadding(), // add padding for status bars
                     color = MaterialTheme.colorScheme.background
                 ) {
                     TopicGrid(
+                        // display topic grid with padding
                         modifier = Modifier.padding(
                             start = dimensionResource(R.dimen.padding_small),
                             top = dimensionResource(R.dimen.padding_small),
@@ -64,12 +66,19 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun TopicGrid(modifier: Modifier = Modifier) {
+    // a Lazy vertical grid will display its items in a vertically scrollable container,
+    // spanned across multiple columns, while the Lazy horizontal grids will have
+    // the same behaviour on the horizontal axis
     LazyVerticalGrid(
+        // create lazy vertical grid with max 2 columns
         columns = GridCells.Fixed(2),
+        // space between rows
         verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_small)),
+        // space between columns
         horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_small)),
         modifier = modifier
     ) {
+        // iterate over the list of topics and create a TopicCard for each item
         items(DataSource.topics) { topic ->
             TopicCard(topic)
         }
@@ -78,10 +87,17 @@ fun TopicGrid(modifier: Modifier = Modifier) {
 
 @Composable
 fun TopicCard(topic: Topic, modifier: Modifier = Modifier) {
+//    +--------------------------------+
+//    | [ Image ]       Text           |
+//    |                                |
+//    |                 [Icon]  Text   |
+//    +--------------------------------+
     Card {
         Row {
             Box {
+                // display the topic image
                 Image(
+                    // load the image resource from topic DTO (Data Transfer Object)
                     painter = painterResource(id = topic.imageRes),
                     contentDescription = null,
                     modifier = modifier
@@ -92,10 +108,13 @@ fun TopicCard(topic: Topic, modifier: Modifier = Modifier) {
             }
 
             Column {
+                // Display the topic name
                 Text(
                     text = stringResource(id = topic.name),
+                    // set the text style
                     style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.padding(
+                        // padding size from dimens.xml
                         start = dimensionResource(R.dimen.padding_medium),
                         top = dimensionResource(R.dimen.padding_medium),
                         end = dimensionResource(R.dimen.padding_medium),
@@ -103,12 +122,14 @@ fun TopicCard(topic: Topic, modifier: Modifier = Modifier) {
                     )
                 )
                 Row(verticalAlignment = Alignment.CenterVertically) {
+                    // display icon
                     Icon(
                         painter = painterResource(R.drawable.ic_grain),
                         contentDescription = null,
                         modifier = Modifier
                             .padding(start = dimensionResource(R.dimen.padding_medium))
                     )
+                    // display available course information
                     Text(
                         text = topic.availableCourses.toString(),
                         style = MaterialTheme.typography.labelMedium,
@@ -120,6 +141,7 @@ fun TopicCard(topic: Topic, modifier: Modifier = Modifier) {
     }
 }
 
+// preview in android studio
 @Preview(showBackground = true)
 @Composable
 fun TopicPreview() {
