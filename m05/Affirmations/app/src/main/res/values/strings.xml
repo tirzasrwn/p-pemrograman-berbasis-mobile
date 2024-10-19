@@ -1,7 +1,8 @@
 <resources>
     <string name="app_name">Affirmations</string>
-    <string name="affirmation1">I am strong.</string>
-    <string name="affirmation2">I believe in myself.</string>
+    <!-- list of affirmation text that will be use -->
+    <string name="affirmation1">The fear of the LORD is the beginning of wisdom.</string>
+    <string name="affirmation2">Knowledge of the holy is understanding.</string>
     <string name="affirmation3">Each day is a new opportunity to grow and be a better version of myself.</string>
     <string name="affirmation4">Every challenge in my life is an opportunity to learn from.</string>
     <string name="affirmation5">I have so much to be grateful for.</string>

@@ -35,49 +35,69 @@ class MainActivity : ComponentActivity() {
             AffirmationsTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
-                        modifier = Modifier.fillMaxSize(),
-                        color = MaterialTheme.colorScheme.background
-                ) { AffirmationsApp() }
+                    modifier = Modifier.fillMaxSize(),
+                    // set the color background to the background color theme
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    // call the main content
+                    AffirmationsApp()
+                }
             }
         }
     }
 }
 
+// main app content
 @Composable
 fun AffirmationsApp() {
     AffirmationList(
-            affirmationList = Datasource().loadAffirmations(),
+        // load affirmation list from Datasource
+        affirmationList = Datasource().loadAffirmations(),
     )
 }
 
+// display a list of affirmation using lazy column
 @Composable
 fun AffirmationList(affirmationList: List<Affirmation>, modifier: Modifier = Modifier) {
+    // a LazyColumn is a vertically scrolling list
+    // that only composes and lays out the currently visible items
     LazyColumn(modifier = modifier) {
+        // like for loop to list's length, items will iterate trough the list and
+        // create a card for each affirmation
         items(affirmationList) { affirmation ->
             AffirmationCard(affirmation = affirmation, modifier = Modifier.padding(8.dp))
         }
     }
 }
 
+// create one affirmation card basic structure
 @Composable
 fun AffirmationCard(affirmation: Affirmation, modifier: Modifier = Modifier) {
     Card(modifier = modifier) {
+        // |-------|
+        // | image |
+        // |-------|
+        // | text  |
+        // |-------|
         Column {
             Image(
-                    painter = painterResource(affirmation.imageResourceId),
-                    contentDescription = stringResource(affirmation.stringResourceId),
-                    modifier = Modifier.fillMaxWidth().height(194.dp),
-                    contentScale = ContentScale.Crop
+                painter = painterResource(affirmation.imageResourceId),
+                contentDescription = stringResource(affirmation.stringResourceId),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(194.dp),
+                contentScale = ContentScale.Crop
             )
             Text(
-                    text = LocalContext.current.getString(affirmation.stringResourceId),
-                    modifier = Modifier.padding(16.dp),
-                    style = MaterialTheme.typography.headlineSmall
+                text = LocalContext.current.getString(affirmation.stringResourceId),
+                modifier = Modifier.padding(16.dp),
+                style = MaterialTheme.typography.headlineSmall
             )
         }
     }
 }
 
+// preview function for the AffirmationCard composable
 @Preview
 @Composable
 private fun AffirmationCardPreview() {

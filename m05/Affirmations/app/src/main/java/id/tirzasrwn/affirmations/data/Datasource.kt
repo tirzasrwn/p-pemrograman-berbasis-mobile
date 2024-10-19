@@ -6,6 +6,8 @@ import id.tirzasrwn.affirmations.model.Affirmation
 /** [Datasource] generates a list of [Affirmation] */
 class Datasource() {
     fun loadAffirmations(): List<Affirmation> {
+        // listOf makes a linked list array of type Affirmation data class
+        // data still static and not yet comes from db or API
         return listOf<Affirmation>(
                 Affirmation(R.string.affirmation1, R.drawable.image1),
                 Affirmation(R.string.affirmation2, R.drawable.image2),
