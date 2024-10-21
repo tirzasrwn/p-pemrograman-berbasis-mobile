@@ -37,7 +37,7 @@ fun MoodListScreen(navController: NavController) {
                 .padding(paddingValues) // apply the padding from the Scaffold
                 .padding(16.dp) // your custom padding
         ) {
-            val moodList = Datasource().loadMoods();
+            val moodList = Datasource().loadMoods()
             items(moodList) { mood ->
                 MoodCard(mood, navController)
             }
@@ -96,7 +96,7 @@ private fun MoodCardPreview() {
             emoji = "😊",
             description = "Feeling Happy",
             story = "Today was a fantastic day! I had a lot of fun with friends.",
-            imageRes = R.drawable.mood_image
+            imageRes = R.drawable.mood_image1
         ),
         navController = navController
     )

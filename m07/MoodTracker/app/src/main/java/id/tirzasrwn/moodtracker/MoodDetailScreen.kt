@@ -102,7 +102,7 @@ fun MoodDetailScreenPreview() {
         emoji = "😊",
         description = "Feeling Happy",
         story = "Today was a fantastic day! I had a lot of fun with friends.",
-        imageRes = R.drawable.mood_image, // replace with your image resource
+        imageRes = R.drawable.mood_image1, // replace with your image resource
         navController = navController,
     )
 }
