@@ -1,5 +1,6 @@
 package id.tirzasrwn.moodtracker
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -26,6 +27,13 @@ fun MoodDetailScreen(
     imageRes: Int?,
     navController: NavController
 ) {
+    // Handle the Android back button
+    BackHandler {
+        navController.navigate("moodList") {
+            popUpTo("moodList") { inclusive = true }
+        }
+    }
+
     // Sample mood list from Datasource
     val moodList = Datasource().loadMoods()
 
