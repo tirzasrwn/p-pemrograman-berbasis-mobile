@@ -1,17 +1,11 @@
 package id.tirzasrwn.moodtracker
 
-
 // moodListScreen.kt
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -29,58 +23,61 @@ import id.tirzasrwn.moodtracker.model.Mood
 fun MoodListScreen(navController: NavController) {
     Scaffold(
         topBar = {
-            Text("Mood Tracker")
+            // Simple Text for top bar with padding
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Mood Tracker",
+                    style = MaterialTheme.typography.titleLarge
+                )
+            }
         }
-    ) { paddingValues ->  // the padding values provided by Scaffold
+    ) { paddingValues ->
         LazyColumn(
             modifier = Modifier
-                .padding(paddingValues) // apply the padding from the Scaffold
-                .padding(16.dp) // your custom padding
+                .padding(paddingValues)
+                .padding(16.dp)
         ) {
             val moodList = Datasource().loadMoods()
-            items(moodList) { mood ->
-                MoodCard(mood, navController)
+            items(moodList.size) { index ->
+                MoodCard(mood = moodList[index], index = index, navController = navController)
             }
         }
     }
 }
 
 @Composable
-fun MoodCard(mood: Mood, navController: NavController) {
+fun MoodCard(mood: Mood, index: Int, navController: NavController) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp)
+            .padding(vertical = 8.dp)
             .clickable {
-                // navigate to the detail page with mood details
-                navController.navigate("moodDetail/${mood.day}/${mood.emoji}/${mood.description}/${mood.story}/${mood.imageRes}")
+                // Navigate to mood detail with index
+                navController.navigate("moodDetail/$index/${mood.day}/${mood.emoji}/${mood.description}/${mood.story}/${mood.imageRes}")
             },
-        elevation = CardDefaults.cardElevation(4.dp)
+        elevation = CardDefaults.cardElevation(2.dp) // Reduced elevation for minimalist look
     ) {
         Row(
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier
+                .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
+            // Display emoji with reduced size
             Text(text = mood.emoji, style = MaterialTheme.typography.headlineMedium)
+
             Spacer(modifier = Modifier.width(16.dp))
+
             Column(
-                modifier = Modifier.weight(1f) // allow the column to take available space
+                modifier = Modifier.weight(1f)
             ) {
-                Text(text = "Day ${mood.day}", style = MaterialTheme.typography.headlineSmall)
+                // Simpler text styling
+                Text(text = "Day ${mood.day}", style = MaterialTheme.typography.bodyLarge)
                 Text(text = mood.description, style = MaterialTheme.typography.bodySmall)
-            }
-            // add a button with an arrow icon to navigate to the detail screen
-            Button(
-                onClick = {
-                    // navigate to the detail page with mood details
-                    navController.navigate("moodDetail/${mood.day}/${mood.emoji}/${mood.description}/${mood.story}/${mood.imageRes}")
-                },
-                modifier = Modifier.padding(start = 8.dp) // add some padding to the button
-            ) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight, // use the arrow icon
-                    contentDescription = "Navigate to details",
-                )
             }
         }
     }
@@ -89,7 +86,7 @@ fun MoodCard(mood: Mood, navController: NavController) {
 @Preview(showBackground = true)
 @Composable
 private fun MoodCardPreview() {
-    val navController = rememberNavController() // create a NavController instance
+    val navController = rememberNavController()
     MoodCard(
         mood = Mood(
             day = 1,
@@ -98,6 +95,7 @@ private fun MoodCardPreview() {
             story = "Today was a fantastic day! I had a lot of fun with friends.",
             imageRes = R.drawable.mood_image1
         ),
-        navController = navController
+        navController = navController,
+        index = 1,
     )
 }

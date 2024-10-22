@@ -14,9 +14,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import id.tirzasrwn.moodtracker.data.Datasource
 
 @Composable
 fun MoodDetailScreen(
+    index: Int?, // Add index for navigation
     day: String?,
     emoji: String?,
     description: String?,
@@ -24,9 +26,12 @@ fun MoodDetailScreen(
     imageRes: Int?,
     navController: NavController
 ) {
+    // Sample mood list from Datasource
+    val moodList = Datasource().loadMoods()
+
     Scaffold(
         topBar = {
-            Text("Mood Detail")
+            CustomTopBar(navController)
         }
     ) { paddingValues ->
         Box(
@@ -41,55 +46,112 @@ fun MoodDetailScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top
             ) {
-                // display the emoji
-                Text(text = emoji ?: "", style = MaterialTheme.typography.headlineLarge)
+                // Display emoji
+                Text(
+                    text = emoji ?: "",
+                    style = MaterialTheme.typography.displayMedium,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+
+                // Display day and description
+                Text(text = "Day $day", style = MaterialTheme.typography.titleSmall)
+                Text(text = description ?: "", style = MaterialTheme.typography.bodyMedium)
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // display the day and description
-                Text(text = "Day $day", style = MaterialTheme.typography.headlineSmall)
-                Text(text = description ?: "", style = MaterialTheme.typography.bodySmall)
-
-                Spacer(modifier = Modifier.height(24.dp))
-
-                // display the image
+                // Display image
                 imageRes?.let {
                     Image(
                         painter = painterResource(id = it),
                         contentDescription = "Mood image for the day",
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(200.dp), // adjust the height as needed
+                            .height(150.dp),
                         contentScale = ContentScale.Crop
                     )
                 }
 
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
-                // display the story
-                Text(text = "Story of the day:", style = MaterialTheme.typography.headlineSmall)
+                // Display story
+                Text(text = "Story of the day", style = MaterialTheme.typography.titleSmall)
                 Text(
                     text = story ?: "No story available.",
-                    style = MaterialTheme.typography.bodyMedium
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.padding(top = 8.dp)
                 )
+
+                // Spacer to push content up
+                Spacer(modifier = Modifier.weight(1f)) // This will push the buttons to the bottom
             }
 
-            // back button
-            Button(
-                onClick = {
-                    navController.popBackStack() // navigate back to the previous screen
-                },
+            // Add Back and Next buttons at the bottom
+            Row(
                 modifier = Modifier
-                    .align(Alignment.BottomStart) // align the button to the bottom left
-                    .padding(16.dp) // add some padding to the button
+                    .align(Alignment.BottomCenter)
+                    .padding(16.dp)
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                // back button with an icon
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
-                    contentDescription = "Back",
-                )
+                Button(
+                    onClick = {
+                        if (index != null && index > 0) {
+                            // Navigate to the previous mood
+                            val previousMood = moodList[index - 1]
+                            navController.navigate("moodDetail/${index - 1}/${previousMood.day}/${previousMood.emoji}/${previousMood.description}/${previousMood.story}/${previousMood.imageRes}")
+                        }
+                    },
+                    enabled = index != null && index > 0 // Disable if first mood
+                ) {
+                    Text("Back")
+                }
+
+                Button(
+                    onClick = {
+                        if (index != null && index < moodList.size - 1) {
+                            // Navigate to the next mood
+                            val nextMood = moodList[index + 1]
+                            navController.navigate("moodDetail/${index + 1}/${nextMood.day}/${nextMood.emoji}/${nextMood.description}/${nextMood.story}/${nextMood.imageRes}")
+                        }
+                    },
+                    enabled = index != null && index < moodList.size - 1 // Disable if last mood
+                ) {
+                    Text("Next")
+                }
             }
         }
+    }
+}
+
+@Composable
+fun CustomTopBar(navController: NavController) {
+    // Custom Row-based top bar with back button and title
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(56.dp)
+            .padding(horizontal = 16.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        // Back button that explicitly navigates to MoodListScreen
+        IconButton(onClick = {
+            navController.navigate("moodList") {
+                popUpTo("moodList") { inclusive = true } // Clear the backstack up to MoodListScreen
+            }
+        }) {
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+                contentDescription = "Back"
+            )
+        }
+
+        Spacer(modifier = Modifier.width(8.dp))
+
+        // Title in the center
+        Text(
+            text = "Mood Detail",
+            style = MaterialTheme.typography.titleMedium
+        )
     }
 }
 
@@ -102,7 +164,8 @@ fun MoodDetailScreenPreview() {
         emoji = "😊",
         description = "Feeling Happy",
         story = "Today was a fantastic day! I had a lot of fun with friends.",
-        imageRes = R.drawable.mood_image1, // replace with your image resource
+        imageRes = R.drawable.mood_image1,
         navController = navController,
+        index = 1,
     )
 }

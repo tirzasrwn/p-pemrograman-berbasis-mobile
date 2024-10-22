@@ -18,7 +18,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             MoodTrackerTheme {
                 Surface (
-                   modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background,
                 ){
                     // use Navigation Controller for multiple pages
@@ -27,14 +27,15 @@ class MainActivity : ComponentActivity() {
                         composable("moodList") {
                             MoodListScreen(navController)
                         }
-                        composable("moodDetail/{day}/{emoji}/{description}/{story}/{imageRes}") { backStackEntry ->
+                        composable("moodDetail/{index}/{day}/{emoji}/{description}/{story}/{imageRes}") { backStackEntry ->
+                            val index = backStackEntry.arguments?.getString("index")?.toIntOrNull()
                             val day = backStackEntry.arguments?.getString("day")
                             val emoji = backStackEntry.arguments?.getString("emoji")
                             val description = backStackEntry.arguments?.getString("description")
                             val story = backStackEntry.arguments?.getString("story")
                             val imageRes = backStackEntry.arguments?.getString("imageRes")?.toIntOrNull() // Convert to Int
 
-                            MoodDetailScreen(day, emoji, description, story, imageRes, navController)
+                            MoodDetailScreen(index, day, emoji, description, story, imageRes, navController)
                         }
                     }
                 }
