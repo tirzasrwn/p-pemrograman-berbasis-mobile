@@ -17,10 +17,10 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             MoodTrackerTheme {
-                Surface (
+                Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background,
-                ){
+                ) {
                     // use Navigation Controller for multiple pages
                     val navController = rememberNavController()
                     NavHost(navController, startDestination = "moodList") {
@@ -33,9 +33,18 @@ class MainActivity : ComponentActivity() {
                             val emoji = backStackEntry.arguments?.getString("emoji")
                             val description = backStackEntry.arguments?.getString("description")
                             val story = backStackEntry.arguments?.getString("story")
-                            val imageRes = backStackEntry.arguments?.getString("imageRes")?.toIntOrNull() // Convert to Int
+                            val imageRes = backStackEntry.arguments?.getString("imageRes")
+                                ?.toIntOrNull() // Convert to Int
 
-                            MoodDetailScreen(index, day, emoji, description, story, imageRes, navController)
+                            MoodDetailScreen(
+                                index,
+                                day,
+                                emoji,
+                                description,
+                                story,
+                                imageRes,
+                                navController
+                            )
                         }
                     }
                 }

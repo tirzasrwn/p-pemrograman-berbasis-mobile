@@ -1,5 +1,6 @@
 package id.tirzasrwn.moodtracker
 
+import android.content.res.Configuration
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -10,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -37,6 +39,10 @@ fun MoodDetailScreen(
     // Sample mood list from Datasource
     val moodList = Datasource().loadMoods()
 
+    // Get the current orientation
+    val configuration = LocalConfiguration.current
+    val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+
     Scaffold(
         topBar = {
             CustomTopBar(navController)
@@ -47,50 +53,105 @@ fun MoodDetailScreen(
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Top
-            ) {
-                // Display emoji
-                Text(
-                    text = emoji ?: "",
-                    style = MaterialTheme.typography.displayMedium,
-                    modifier = Modifier.padding(bottom = 8.dp)
-                )
+            if (isLandscape) {
+                // Layout for landscape mode
+                Row(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    // Image on the left side
+                    imageRes?.let {
+                        Image(
+                            painter = painterResource(id = it),
+                            contentDescription = "Mood image for the day",
+                            modifier = Modifier
+                                .fillMaxHeight()
+                                .weight(1f)
+                                .padding(end = 16.dp),
+                            contentScale = ContentScale.Crop
+                        )
+                    }
 
-                // Display day and description
-                Text(text = "Day $day", style = MaterialTheme.typography.titleSmall)
-                Text(text = description ?: "", style = MaterialTheme.typography.bodyMedium)
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                // Display image
-                imageRes?.let {
-                    Image(
-                        painter = painterResource(id = it),
-                        contentDescription = "Mood image for the day",
+                    // Text content on the right side
+                    Column(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .height(150.dp),
-                        contentScale = ContentScale.Crop
-                    )
+                            .fillMaxHeight()
+                            .weight(1f),
+                        horizontalAlignment = Alignment.Start,
+                        verticalArrangement = Arrangement.Top
+                    ) {
+                        // Display emoji
+                        Text(
+                            text = emoji ?: "",
+                            style = MaterialTheme.typography.displayMedium,
+                            modifier = Modifier.padding(bottom = 8.dp)
+                        )
+
+                        // Display day and description
+                        Text(text = "Day $day", style = MaterialTheme.typography.titleSmall)
+                        Text(text = description ?: "", style = MaterialTheme.typography.bodyMedium)
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        // Display story
+                        Text(text = "Story of the day", style = MaterialTheme.typography.titleSmall)
+                        Text(
+                            text = story ?: "No story available.",
+                            style = MaterialTheme.typography.bodyMedium,
+                            modifier = Modifier.padding(top = 8.dp)
+                        )
+                    }
                 }
+            } else {
+                // Layout for portrait mode
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Top
+                ) {
+                    // Display emoji
+                    Text(
+                        text = emoji ?: "",
+                        style = MaterialTheme.typography.displayMedium,
+                        modifier = Modifier.padding(bottom = 8.dp)
+                    )
 
-                Spacer(modifier = Modifier.height(16.dp))
+                    // Display day and description
+                    Text(text = "Day $day", style = MaterialTheme.typography.titleSmall)
+                    Text(text = description ?: "", style = MaterialTheme.typography.bodyMedium)
 
-                // Display story
-                Text(text = "Story of the day", style = MaterialTheme.typography.titleSmall)
-                Text(
-                    text = story ?: "No story available.",
-                    style = MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier.padding(top = 8.dp)
-                )
+                    Spacer(modifier = Modifier.height(16.dp))
 
-                // Spacer to push content up
-                Spacer(modifier = Modifier.weight(1f)) // This will push the buttons to the bottom
+                    // Display image
+                    imageRes?.let {
+                        Image(
+                            painter = painterResource(id = it),
+                            contentDescription = "Mood image for the day",
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(150.dp),
+                            contentScale = ContentScale.Crop
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    // Display story
+                    Text(text = "Story of the day", style = MaterialTheme.typography.titleSmall)
+                    Text(
+                        text = story ?: "No story available.",
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier.padding(top = 8.dp)
+                    )
+
+                    // Spacer to push content up
+                    Spacer(modifier = Modifier.weight(1f)) // This will push the buttons to the bottom
+                }
             }
 
             // Add Back and Next buttons at the bottom
@@ -166,6 +227,25 @@ fun CustomTopBar(navController: NavController) {
 @Preview(showBackground = true)
 @Composable
 fun MoodDetailScreenPreview() {
+    val navController = rememberNavController()
+    MoodDetailScreen(
+        day = "1",
+        emoji = "😊",
+        description = "Feeling Happy",
+        story = "Today was a fantastic day! I had a lot of fun with friends.",
+        imageRes = R.drawable.mood_image1,
+        navController = navController,
+        index = 1,
+    )
+}
+
+@Preview(
+    showBackground = true,
+    widthDp = 720,
+    heightDp = 360
+)
+@Composable
+fun MoodDetailScreenLandscapePreview() {
     val navController = rememberNavController()
     MoodDetailScreen(
         day = "1",
