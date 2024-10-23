@@ -167,7 +167,6 @@ private fun DogItemButton(
  * @param modifier modifiers to set to this composable
  */
 @Composable
-@OptIn(ExperimentalMaterial3Api::class)
 fun WoofTopAppBar(modifier: Modifier = Modifier) {
     CenterAlignedTopAppBar(
         title = {
