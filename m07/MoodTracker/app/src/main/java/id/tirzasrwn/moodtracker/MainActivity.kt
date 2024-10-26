@@ -16,34 +16,36 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            // use custom mood tracker theme
             MoodTrackerTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background,
                 ) {
                     // use Navigation Controller for multiple pages
+                    // this is also uses for managing navigation between screens
                     val navController = rememberNavController()
+                    // when application start, go to mood list screen
                     NavHost(navController, startDestination = "moodList") {
+                        // define composable for mood list screen
                         composable("moodList") {
+                            // call mood list screen
                             MoodListScreen(navController)
                         }
+                        // define composable for mood detail screen
                         composable("moodDetail/{index}/{day}/{emoji}/{description}/{story}/{imageRes}") { backStackEntry ->
+                            // receive argument passed to mood detail screen
                             val index = backStackEntry.arguments?.getString("index")?.toIntOrNull()
                             val day = backStackEntry.arguments?.getString("day")
                             val emoji = backStackEntry.arguments?.getString("emoji")
                             val description = backStackEntry.arguments?.getString("description")
                             val story = backStackEntry.arguments?.getString("story")
-                            val imageRes = backStackEntry.arguments?.getString("imageRes")
-                                ?.toIntOrNull() // Convert to Int
+                            val imageRes =
+                                backStackEntry.arguments?.getString("imageRes")?.toIntOrNull()
 
+                            // call mood detail screen
                             MoodDetailScreen(
-                                index,
-                                day,
-                                emoji,
-                                description,
-                                story,
-                                imageRes,
-                                navController
+                                index, day, emoji, description, story, imageRes, navController
                             )
                         }
                     }

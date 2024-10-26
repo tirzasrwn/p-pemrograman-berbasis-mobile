@@ -3,6 +3,7 @@ package id.tirzasrwn.moodtracker.data
 import id.tirzasrwn.moodtracker.model.Mood
 import id.tirzasrwn.moodtracker.R
 
+// list of static mood data source. it contains 30 of mood lists
 class Datasource {
     fun loadMoods(): List<Mood> {
         return listOf(

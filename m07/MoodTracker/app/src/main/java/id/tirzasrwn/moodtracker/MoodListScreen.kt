@@ -1,6 +1,5 @@
 package id.tirzasrwn.moodtracker
 
-// moodListScreen.kt
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -21,29 +20,30 @@ import id.tirzasrwn.moodtracker.model.Mood
 
 @Composable
 fun MoodListScreen(navController: NavController) {
-    Scaffold(
-        topBar = {
-            // Simple Text for top bar with padding
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = "Mood Tracker",
-                    style = MaterialTheme.typography.titleLarge
-                )
-            }
+    // scaffold provides a basic layout structure with a top bar
+    Scaffold(topBar = {
+        // simple text for top bar with padding
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Mood Tracker", style = MaterialTheme.typography.titleLarge
+            )
         }
-    ) { paddingValues ->
+    }) { paddingValues ->
+        // lazy column to display a list of moods
         LazyColumn(
             modifier = Modifier
                 .padding(paddingValues)
                 .padding(16.dp)
         ) {
+            // load moods from the datasource
             val moodList = Datasource().loadMoods()
             items(moodList.size) { index ->
+                // create a mood card for each mood in the list
                 MoodCard(mood = moodList[index], index = index, navController = navController)
             }
         }
@@ -52,22 +52,24 @@ fun MoodListScreen(navController: NavController) {
 
 @Composable
 fun MoodCard(mood: Mood, index: Int, navController: NavController) {
+    // +--------------------------------------------------+
+    // |   [emoji]  day X                                 |
+    // |            [description]                         |
+    // +--------------------------------------------------+
+    // card to display individual mood information
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp)
             .clickable {
-                // Navigate to mood detail with index
+                // navigate to mood detail screen with mood data
                 navController.navigate("moodDetail/$index/${mood.day}/${mood.emoji}/${mood.description}/${mood.story}/${mood.imageRes}")
-            },
-        elevation = CardDefaults.cardElevation(2.dp) // Reduced elevation for minimalist look
+            }, elevation = CardDefaults.cardElevation(2.dp) // reduced elevation for minimalist look
     ) {
         Row(
-            modifier = Modifier
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
+            modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically
         ) {
-            // Display emoji with reduced size
+            // display emoji with reduced size
             Text(text = mood.emoji, style = MaterialTheme.typography.headlineMedium)
 
             Spacer(modifier = Modifier.width(16.dp))
@@ -75,7 +77,7 @@ fun MoodCard(mood: Mood, index: Int, navController: NavController) {
             Column(
                 modifier = Modifier.weight(1f)
             ) {
-                // Simpler text styling
+                // simpler text styling for mood details
                 Text(text = "Day ${mood.day}", style = MaterialTheme.typography.bodyLarge)
                 Text(text = mood.description, style = MaterialTheme.typography.bodySmall)
             }
@@ -86,6 +88,7 @@ fun MoodCard(mood: Mood, index: Int, navController: NavController) {
 @Preview(showBackground = true)
 @Composable
 private fun MoodCardPreview() {
+    // create a preview of the mood card with sample data
     val navController = rememberNavController()
     MoodCard(
         mood = Mood(
