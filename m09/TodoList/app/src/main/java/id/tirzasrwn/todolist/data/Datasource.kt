@@ -2,8 +2,9 @@ package id.tirzasrwn.todolist.data
 
 import id.tirzasrwn.todolist.model.Todo
 
+// loadTodos returns a list of todos
 class Datasource {
-    fun loadMoods(): List<Todo> {
+    fun loadTodos(): List<Todo> {
         return listOf(
             Todo(taskName = "Write Python script"),
             Todo(taskName = "Study algorithms"),

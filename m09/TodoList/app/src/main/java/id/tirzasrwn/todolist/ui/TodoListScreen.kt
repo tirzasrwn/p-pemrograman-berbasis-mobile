@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import id.tirzasrwn.todolist.model.Todo
 
+// ui layer to send event trigger to viewmodel and receive update state from viewmodel
 @Composable
 fun TodoListScreen(modifier: Modifier = Modifier, toDoViewModel: TodoListViewModel = viewModel()) {
     val uiState = toDoViewModel.uiState
@@ -44,9 +45,9 @@ fun TodoListScreen(modifier: Modifier = Modifier, toDoViewModel: TodoListViewMod
         TodoList(
             toDoList = toDoViewModel.toDoList,
             onChecked = { toDoItem, isChecked ->
-                toDoViewModel.onTaskChecked(toDoItem, isChecked)
+                toDoViewModel.onTaskChecked(toDoItem, isChecked) // handle task check/uncheck
             },
-            onDeleteTask = { toDoItem -> toDoViewModel.removeTodoItem(toDoItem) },
+            onDeleteTask = { toDoItem -> toDoViewModel.removeTodoItem(toDoItem) }, // handle task deletion
             modifier = modifier
                 .weight(1f)
                 .fillMaxSize(),
@@ -56,7 +57,7 @@ fun TodoListScreen(modifier: Modifier = Modifier, toDoViewModel: TodoListViewMod
             var toDoText by remember { mutableStateOf("") }
             TextField(
                 value = toDoText,
-                onValueChange = { text -> toDoText = text },
+                onValueChange = { text -> toDoText = text }, // update text field value
                 modifier = Modifier
                     .weight(1f)
                     .padding(8.dp),
@@ -65,15 +66,14 @@ fun TodoListScreen(modifier: Modifier = Modifier, toDoViewModel: TodoListViewMod
                 keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
                 keyboardActions = KeyboardActions(
                     onDone = {
-                        toDoViewModel.addTodoItem(newTaskName = toDoText)
-                        toDoText = ""
+                        toDoViewModel.addTodoItem(newTaskName = toDoText) // add new task
+                        toDoText = "" // clear text field
                     }
                 )
             )
         }
     }
 }
-
 
 @Composable
 fun TodoList(
@@ -82,13 +82,14 @@ fun TodoList(
     onDeleteTask: (Todo) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    // scrollable list that display todo items
     LazyColumn(state = rememberLazyListState(), modifier = modifier) {
         items(toDoList, key = { it.taskName }) { toDoItem ->
             TodoItem(
                 taskName = toDoItem.taskName,
                 isCompleted = toDoItem.isCompleted.value,
-                onChecked = { isChecked -> onChecked(toDoItem, isChecked) },
-                onDeleteClick = { onDeleteTask(toDoItem) },
+                onChecked = { isChecked -> onChecked(toDoItem, isChecked) }, // handle checkbox state change
+                onDeleteClick = { onDeleteTask(toDoItem) }, // handle delete action
                 modifier = modifier
             )
         }
@@ -106,16 +107,14 @@ fun TodoItem(
     Row(
         verticalAlignment = Alignment.CenterVertically, modifier = modifier.padding(12.dp)
     ) {
-        Checkbox(checked = isCompleted, onCheckedChange = onChecked)
-        Text(text = taskName, modifier = Modifier.weight(1f))
+        Checkbox(checked = isCompleted, onCheckedChange = onChecked) // checkbox for task completion
+        Text(text = taskName, modifier = Modifier.weight(1f)) // display task name
         IconButton(
-            modifier = Modifier.then(Modifier.size(48.dp)), onClick = onDeleteClick
+            modifier = Modifier.then(Modifier.size(48.dp)), onClick = onDeleteClick // delete button
         ) {
             Icon(
-                Icons.Filled.Delete, "delete button", tint = Color.Red
+                Icons.Filled.Delete, "delete button", tint = Color.Red // delete icon
             )
         }
     }
 }
-
-
