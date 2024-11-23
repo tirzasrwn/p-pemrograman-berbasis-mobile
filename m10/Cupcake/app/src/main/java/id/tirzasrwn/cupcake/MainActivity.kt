@@ -6,10 +6,11 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import id.tirzasrwn.cupcake.ui.theme.CupcakeTheme
 
+// MainActivity is the entry point of the cupcake app.
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
-        enableEdgeToEdge()
-        super.onCreate(savedInstanceState)
-        setContent { CupcakeTheme { CupcakeApp() } }
+        enableEdgeToEdge() // enable edge-to-edge display
+        super.onCreate(savedInstanceState) // call superclass onCreate
+        setContent { CupcakeTheme { CupcakeApp() } } // set content with cupcake theme
     }
 }

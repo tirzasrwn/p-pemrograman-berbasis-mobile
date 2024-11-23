@@ -34,81 +34,91 @@ import id.tirzasrwn.cupcake.ui.theme.CupcakeTheme
  */
 @Composable
 fun SelectOptionScreen(
-        subtotal: String,
-        options: List<String>,
-        onSelectionChanged: (String) -> Unit = {},
-        onCancelButtonClicked: () -> Unit = {},
-        onNextButtonClicked: () -> Unit = {},
-        modifier: Modifier = Modifier
+    subtotal: String,
+    options: List<String>,
+    onSelectionChanged: (String) -> Unit = {}, // notify parent about selection change
+    onCancelButtonClicked: () -> Unit = {}, // handle cancel action
+    onNextButtonClicked: () -> Unit = {}, // handle next action
+    modifier: Modifier = Modifier
 ) {
-    var selectedValue by rememberSaveable { mutableStateOf("") }
+    var selectedValue by rememberSaveable { mutableStateOf("") } // remember the selected option across recompositions
 
     Column(modifier = modifier, verticalArrangement = Arrangement.SpaceBetween) {
+        // Options list with selectable radio buttons
         Column(modifier = Modifier.padding(dimensionResource(R.dimen.padding_medium))) {
             options.forEach { item ->
                 Row(
-                        modifier =
-                                Modifier.selectable(
-                                        selected = selectedValue == item,
-                                        onClick = {
-                                            selectedValue = item
-                                            onSelectionChanged(item)
-                                        }
-                                ),
-                        verticalAlignment = Alignment.CenterVertically
+                    modifier =
+                    Modifier.selectable(
+                        selected = selectedValue == item, // mark as selected
+                        onClick = {
+                            selectedValue = item // update selected value
+                            onSelectionChanged(item) // notify parent
+                        }
+                    ),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     RadioButton(
-                            selected = selectedValue == item,
-                            onClick = {
-                                selectedValue = item
-                                onSelectionChanged(item)
-                            }
+                        selected = selectedValue == item, // indicate selected state
+                        onClick = {
+                            selectedValue = item // update selection
+                            onSelectionChanged(item) // notify parent
+                        }
                     )
-                    Text(item)
+                    Text(item) // display option text
                 }
             }
+
+            // divider for visual separation
             Divider(
-                    thickness = dimensionResource(R.dimen.thickness_divider),
-                    modifier = Modifier.padding(bottom = dimensionResource(R.dimen.padding_medium))
+                thickness = dimensionResource(R.dimen.thickness_divider),
+                modifier = Modifier.padding(bottom = dimensionResource(R.dimen.padding_medium))
             )
+
+            // display subtotal
             FormattedPriceLabel(
-                    subtotal = subtotal,
-                    modifier =
-                            Modifier.align(Alignment.End)
-                                    .padding(
-                                            top = dimensionResource(R.dimen.padding_medium),
-                                            bottom = dimensionResource(R.dimen.padding_medium)
-                                    )
+                subtotal = subtotal,
+                modifier =
+                Modifier.align(Alignment.End)
+                    .padding(
+                        top = dimensionResource(R.dimen.padding_medium),
+                        bottom = dimensionResource(R.dimen.padding_medium)
+                    )
             )
         }
+
+        // action buttons (Cancel and Next)
         Row(
-                modifier =
-                        Modifier.fillMaxWidth().padding(dimensionResource(R.dimen.padding_medium)),
-                horizontalArrangement =
-                        Arrangement.spacedBy(dimensionResource(R.dimen.padding_medium)),
-                verticalAlignment = Alignment.Bottom
+            modifier =
+            Modifier.fillMaxWidth().padding(dimensionResource(R.dimen.padding_medium)),
+            horizontalArrangement =
+            Arrangement.spacedBy(dimensionResource(R.dimen.padding_medium)),
+            verticalAlignment = Alignment.Bottom
         ) {
+            // cancel button
             OutlinedButton(modifier = Modifier.weight(1f), onClick = onCancelButtonClicked) {
                 Text(stringResource(R.string.cancel))
             }
+
+            // next button, enabled only if an option is selected
             Button(
-                    modifier = Modifier.weight(1f),
-                    // the button is enabled when the user makes a selection
-                    enabled = selectedValue.isNotEmpty(),
-                    onClick = onNextButtonClicked
+                modifier = Modifier.weight(1f),
+                enabled = selectedValue.isNotEmpty(),
+                onClick = onNextButtonClicked
             ) { Text(stringResource(R.string.next)) }
         }
     }
 }
 
+// preview
 @Preview
 @Composable
 fun SelectOptionPreview() {
     CupcakeTheme {
         SelectOptionScreen(
-                subtotal = "299.99",
-                options = listOf("Option 1", "Option 2", "Option 3", "Option 4"),
-                modifier = Modifier.fillMaxHeight()
+            subtotal = "299.99",
+            options = listOf("Option 1", "Option 2", "Option 3", "Option 4"),
+            modifier = Modifier.fillMaxHeight()
         )
     }
 }
