@@ -97,14 +97,16 @@ fun CupcakeApp(
     ) { innerPadding ->
         val uiState by viewModel.uiState.collectAsState()
 
+        // cupcake navigation
         NavHost(
             navController = navController,
-            startDestination = CupcakeScreen.Start.name,
+            startDestination = CupcakeScreen.Start.name, // start page definition
             modifier =
             Modifier.fillMaxSize()
                 .verticalScroll(rememberScrollState())
                 .padding(innerPadding)
         ) {
+            // start screen definition
             composable(route = CupcakeScreen.Start.name) {
                 StartOrderScreen(
                     quantityOptions = DataSource.quantityOptions,
@@ -117,6 +119,7 @@ fun CupcakeApp(
                         .padding(dimensionResource(R.dimen.padding_medium))
                 )
             }
+            // flavor screen definition
             composable(route = CupcakeScreen.Flavor.name) {
                 val context = LocalContext.current
                 SelectOptionScreen(
@@ -130,6 +133,7 @@ fun CupcakeApp(
                     modifier = Modifier.fillMaxHeight()
                 )
             }
+            // pickup screen definition
             composable(route = CupcakeScreen.Pickup.name) {
                 SelectOptionScreen(
                     subtotal = uiState.price,
@@ -144,6 +148,7 @@ fun CupcakeApp(
                     modifier = Modifier.fillMaxHeight()
                 )
             }
+            // summary screen definition
             composable(route = CupcakeScreen.Summary.name) {
                 val context = LocalContext.current
                 OrderSummaryScreen(
