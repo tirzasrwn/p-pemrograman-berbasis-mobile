@@ -63,7 +63,7 @@ fun PokemonDetailView(pokemonDetail: PokemonDetail) {
         Text(
             text = "Name: ${pokemonDetail.name.capitalize()}",
             style = MaterialTheme.typography.headlineSmall,
-            color = Color.Black
+            color = Color.Gray
         )
         Text(
             text = "ID: ${pokemonDetail.id}",

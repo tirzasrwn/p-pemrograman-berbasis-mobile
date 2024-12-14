@@ -1,13 +1,11 @@
 package id.tirzasrwn.pokemon.ui.screens
 
 import android.util.Log
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
@@ -16,10 +14,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import coil.compose.rememberImagePainter
 import id.tirzasrwn.pokemon.model.Pokemon
 import id.tirzasrwn.pokemon.ui.state.PokemonListUiState
 import id.tirzasrwn.pokemon.ui.viewmodel.PokemonViewModel
@@ -50,7 +46,6 @@ fun PokemonListScreen(viewModel: PokemonViewModel, navController: NavHostControl
     }
 }
 
-
 @Composable
 fun PokemonListView(
     pokemons: List<Pokemon>,
@@ -74,6 +69,7 @@ fun PokemonListView(
         }
     }
 }
+
 @Composable
 fun PokemonListItem(pokemon: Pokemon, onItemClick: (Int) -> Unit) {
     Box(
@@ -83,7 +79,7 @@ fun PokemonListItem(pokemon: Pokemon, onItemClick: (Int) -> Unit) {
             .clickable { onItemClick(pokemon.id) } // Make the list item clickable
     ) {
         Text(
-            text = pokemon.name.capitalize(),
+            text = "${pokemon.id}. ${pokemon.name.capitalize()}", // Add ID before name
             style = MaterialTheme.typography.headlineSmall,
             modifier = Modifier.align(Alignment.CenterStart)
         )
