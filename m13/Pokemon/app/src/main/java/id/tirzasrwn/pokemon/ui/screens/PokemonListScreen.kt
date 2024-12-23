@@ -39,7 +39,7 @@ fun PokemonListScreen(viewModel: PokemonViewModel, navController: NavHostControl
                     viewModel.getPokemonList()
                 },
                 onItemClick = { pokemonId ->
-                    Log.d("PokemonListScreen", "Clicked on Pokémon with ID: $pokemonId")
+                    Log.d("PokemonListScreen", "Clicked on Pokemon with ID: $pokemonId")
                     viewModel.setPokemonId(pokemonId)
                     navController.navigate(PokemonScreen.Detail.name)
                 }
@@ -66,7 +66,7 @@ fun PokemonListView(
                     .fillMaxWidth()
                     .padding(16.dp)
             ) {
-                Text("Load more Pokémon")
+                Text("Load more Pokemon")
             }
         }
     }

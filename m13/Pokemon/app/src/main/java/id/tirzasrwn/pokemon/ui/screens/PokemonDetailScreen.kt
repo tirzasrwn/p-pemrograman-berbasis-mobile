@@ -32,14 +32,17 @@ fun PokemonDetailScreen(viewModel: PokemonViewModel) {
         is PokemonDetailUiState.Loading -> {
             LoadingState()
         }
+
         is PokemonDetailUiState.Error -> {
             ErrorState()
         }
+
         is PokemonDetailUiState.Success -> {
             PokemonDetailView(pokemonDetail = uiState.pokemonDetail)
         }
     }
 }
+
 @Composable
 fun PokemonDetailView(pokemonDetail: PokemonDetail) {
     Column(
@@ -80,8 +83,56 @@ fun PokemonDetailView(pokemonDetail: PokemonDetail) {
             style = MaterialTheme.typography.bodyLarge,
             color = Color.Gray
         )
+        Text(
+            text = "Base Experience: ${pokemonDetail.base_experience}",
+            style = MaterialTheme.typography.bodyLarge,
+            color = Color.Gray
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            text = "Types:", style = MaterialTheme.typography.bodyLarge, color = Color.Gray
+        )
+
+        // Displaying the types
+        pokemonDetail.types.forEach { type ->
+            Text(
+                text = type.type.name.capitalize(),
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color.Blue // Customize the color as needed
+            )
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            text = "Abilities:", style = MaterialTheme.typography.bodyLarge, color = Color.Gray
+        )
+
+        // Displaying the abilities
+        pokemonDetail.abilities.forEach { ability ->
+            Text(
+                text = ability.ability.name.capitalize() + if (ability.is_hidden) " (Hidden)" else "",
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color.Green // Customize the color as needed
+            )
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            text = "Stats:", style = MaterialTheme.typography.bodyLarge, color = Color.Gray
+        )
+
+        // Displaying the stats
+        pokemonDetail.stats.forEach { stat ->
+            Text(
+                text = "${stat.stat.name.capitalize()}: ${stat.base_stat}",
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color.Red // Customize the color as needed
+            )
+        }
     }
 }
+
 @Composable
 fun LoadingState() {
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -92,6 +143,6 @@ fun LoadingState() {
 @Composable
 fun ErrorState() {
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Text("Failed to load Pokémon details", color = Color.Red)
+        Text("Failed to load Pokemon details", color = Color.Red)
     }
 }
