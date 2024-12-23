@@ -1,20 +1,18 @@
 package id.tirzasrwn.pokemon.ui.screens
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import coil.compose.rememberImagePainter
+import coil.compose.SubcomposeAsyncImage
 import id.tirzasrwn.pokemon.model.PokemonDetail
 import id.tirzasrwn.pokemon.ui.state.PokemonDetailUiState
 import id.tirzasrwn.pokemon.ui.viewmodel.PokemonViewModel
@@ -23,23 +21,15 @@ import id.tirzasrwn.pokemon.ui.viewmodel.PokemonViewModel
 fun PokemonDetailScreen(viewModel: PokemonViewModel) {
     val uiState = viewModel.pokemonDetailUiState
 
-    // Fetch the details of the Pokémon when the screen is displayed
+    // Fetch details when the screen is displayed
     LaunchedEffect(viewModel.getPokemonId()) {
         viewModel.getPokemonDetail()
     }
 
     when (uiState) {
-        is PokemonDetailUiState.Loading -> {
-            LoadingState()
-        }
-
-        is PokemonDetailUiState.Error -> {
-            ErrorState()
-        }
-
-        is PokemonDetailUiState.Success -> {
-            PokemonDetailView(pokemonDetail = uiState.pokemonDetail)
-        }
+        is PokemonDetailUiState.Loading -> LoadingState()
+        is PokemonDetailUiState.Error -> ErrorState()
+        is PokemonDetailUiState.Success -> PokemonDetailView(pokemonDetail = uiState.pokemonDetail)
     }
 }
 
@@ -51,83 +41,112 @@ fun PokemonDetailView(pokemonDetail: PokemonDetail) {
             .padding(16.dp)
             .verticalScroll(rememberScrollState())
     ) {
-        val imageUrl = pokemonDetail.sprites.front_default
-        val painter = rememberImagePainter(imageUrl)
-
-        Image(
-            painter = painter,
+        // Display Pokemon image
+        SubcomposeAsyncImage(
+            model = pokemonDetail.sprites.front_default,
             contentDescription = pokemonDetail.name,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(200.dp),
-            contentScale = ContentScale.Fit
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(
-            text = "Name: ${pokemonDetail.name.capitalize()}",
-            style = MaterialTheme.typography.headlineSmall,
-            color = Color.Gray
-        )
-        Text(
-            text = "ID: ${pokemonDetail.id}",
-            style = MaterialTheme.typography.bodyLarge,
-            color = Color.Gray
-        )
-        Text(
-            text = "Height: ${pokemonDetail.height} decimeters",
-            style = MaterialTheme.typography.bodyLarge,
-            color = Color.Gray
-        )
-        Text(
-            text = "Weight: ${pokemonDetail.weight} hectograms",
-            style = MaterialTheme.typography.bodyLarge,
-            color = Color.Gray
-        )
-        Text(
-            text = "Base Experience: ${pokemonDetail.base_experience}",
-            style = MaterialTheme.typography.bodyLarge,
-            color = Color.Gray
+                .height(240.dp),
+            contentScale = ContentScale.Fit,
+            loading = {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
+            },
+            error = {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        "Image not available",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.error
+                    )
+                }
+            }
         )
 
         Spacer(modifier = Modifier.height(16.dp))
-        Text(
-            text = "Types:", style = MaterialTheme.typography.bodyLarge, color = Color.Gray
-        )
 
-        // Displaying the types
-        pokemonDetail.types.forEach { type ->
-            Text(
-                text = type.type.name.capitalize(),
-                style = MaterialTheme.typography.bodyMedium,
-                color = Color.Blue // Customize the color as needed
-            )
+        // Details card
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            shape = MaterialTheme.shapes.medium,
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+        ) {
+            Column(modifier = Modifier.padding(16.dp)) {
+                Text(
+                    text = pokemonDetail.name.capitalize(),
+                    style = MaterialTheme.typography.headlineSmall,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                TextDetail(label = "ID", value = pokemonDetail.id.toString())
+                TextDetail(label = "Height", value = "${pokemonDetail.height} decimeters")
+                TextDetail(label = "Weight", value = "${pokemonDetail.weight} hectograms")
+                TextDetail(label = "Base Experience", value = pokemonDetail.base_experience.toString())
+            }
         }
 
         Spacer(modifier = Modifier.height(16.dp))
-        Text(
-            text = "Abilities:", style = MaterialTheme.typography.bodyLarge, color = Color.Gray
-        )
 
-        // Displaying the abilities
-        pokemonDetail.abilities.forEach { ability ->
-            Text(
-                text = ability.ability.name.capitalize() + if (ability.is_hidden) " (Hidden)" else "",
-                style = MaterialTheme.typography.bodyMedium,
-                color = Color.Green // Customize the color as needed
-            )
-        }
+        // Types section
+        DetailSection(
+            title = "Types",
+            items = pokemonDetail.types.map { it.type.name.capitalize() },
+            color = MaterialTheme.colorScheme.primary
+        )
 
         Spacer(modifier = Modifier.height(16.dp))
-        Text(
-            text = "Stats:", style = MaterialTheme.typography.bodyLarge, color = Color.Gray
+
+        // Abilities section
+        DetailSection(
+            title = "Abilities",
+            items = pokemonDetail.abilities.map {
+                it.ability.name.capitalize() + if (it.is_hidden) " (Hidden)" else ""
+            },
+            color = MaterialTheme.colorScheme.tertiary
         )
 
-        // Displaying the stats
-        pokemonDetail.stats.forEach { stat ->
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Stats section
+        DetailSection(
+            title = "Stats",
+            items = pokemonDetail.stats.map { "${it.stat.name.capitalize()}: ${it.base_stat}" },
+            color = MaterialTheme.colorScheme.secondary
+        )
+    }
+}
+
+@Composable
+fun TextDetail(label: String, value: String) {
+    Text(
+        text = "$label: $value",
+        style = MaterialTheme.typography.bodyLarge,
+        color = MaterialTheme.colorScheme.onSurface
+    )
+}
+
+@Composable
+fun DetailSection(title: String, items: List<String>, color: Color) {
+    Column {
+        Text(
+            text = title,
+            style = MaterialTheme.typography.titleMedium,
+            color = color,
+            modifier = Modifier.padding(bottom = 8.dp)
+        )
+        items.forEach { item ->
             Text(
-                text = "${stat.stat.name.capitalize()}: ${stat.base_stat}",
+                text = item,
                 style = MaterialTheme.typography.bodyMedium,
-                color = Color.Red // Customize the color as needed
+                color = MaterialTheme.colorScheme.onSurface
             )
         }
     }
@@ -143,6 +162,11 @@ fun LoadingState() {
 @Composable
 fun ErrorState() {
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Text("Failed to load Pokemon details", color = Color.Red)
+        Text(
+            text = "Failed to load Pokemon details",
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.error,
+            textAlign = TextAlign.Center
+        )
     }
 }

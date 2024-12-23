@@ -2,18 +2,14 @@ package id.tirzasrwn.pokemon.ui.screens
 
 import android.util.Log
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import id.tirzasrwn.pokemon.PokemonScreen
@@ -27,17 +23,35 @@ fun PokemonListScreen(viewModel: PokemonViewModel, navController: NavHostControl
 
     when (uiState) {
         is PokemonListUiState.Loading -> {
-            LoadingState()
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
+            }
         }
+
         is PokemonListUiState.Error -> {
-            ErrorState()
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "Something went wrong. Please try again.",
+                    style = MaterialTheme.typography.bodyLarge,
+                    textAlign = TextAlign.Center
+                )
+            }
         }
+
         is PokemonListUiState.Success -> {
             PokemonListView(
                 pokemons = uiState.pokemons,
-                onLoadMore = {
-                    viewModel.getPokemonList()
-                },
+                onLoadMore = { viewModel.getPokemonList() },
                 onItemClick = { pokemonId ->
                     Log.d("PokemonListScreen", "Clicked on Pokemon with ID: $pokemonId")
                     viewModel.setPokemonId(pokemonId)
@@ -54,20 +68,25 @@ fun PokemonListView(
     onLoadMore: () -> Unit,
     onItemClick: (Int) -> Unit
 ) {
-    LazyColumn(modifier = Modifier.fillMaxSize()) {
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        contentPadding = PaddingValues(vertical = 8.dp, horizontal = 16.dp)
+    ) {
         items(pokemons) { pokemon ->
             PokemonListItem(pokemon = pokemon, onItemClick = onItemClick)
         }
 
         item {
-            Button(
-                onClick = onLoadMore,
+            Text(
+                text = "Load More",
+                style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp)
-            ) {
-                Text("Load more Pokemon")
-            }
+                    .clickable { onLoadMore() }
+                    .padding(vertical = 16.dp),
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.primary
+            )
         }
     }
 }
@@ -77,13 +96,15 @@ fun PokemonListItem(pokemon: Pokemon, onItemClick: (Int) -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp)
-            .clickable { onItemClick(pokemon.id) } // Make the list item clickable
+            .padding(vertical = 8.dp)
+            .clickable { onItemClick(pokemon.id) }
+            .height(60.dp),
+        contentAlignment = Alignment.CenterStart
     ) {
         Text(
-            text = "${pokemon.id}. ${pokemon.name.capitalize()}", // Add ID before name
-            style = MaterialTheme.typography.headlineSmall,
-            modifier = Modifier.align(Alignment.CenterStart)
+            text = "${pokemon.id}. ${pokemon.name.capitalize()}",
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.onSurface
         )
     }
 }
