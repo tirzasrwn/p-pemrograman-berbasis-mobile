@@ -20,12 +20,12 @@ import id.tirzasrwn.pokemon.ui.state.PokemonDetailUiState
 import id.tirzasrwn.pokemon.ui.viewmodel.PokemonViewModel
 
 @Composable
-fun PokemonDetailScreen(viewModel: PokemonViewModel, pokemonId: Int) {
+fun PokemonDetailScreen(viewModel: PokemonViewModel) {
     val uiState = viewModel.pokemonDetailUiState
 
     // Fetch the details of the Pokémon when the screen is displayed
-    LaunchedEffect(pokemonId) {
-        viewModel.getPokemonDetail(pokemonId)
+    LaunchedEffect(viewModel.getPokemonId()) {
+        viewModel.getPokemonDetail()
     }
 
     when (uiState) {

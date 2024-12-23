@@ -39,7 +39,8 @@ fun PokemonListScreen(viewModel: PokemonViewModel, navController: NavHostControl
                 },
                 onItemClick = { pokemonId ->
                     Log.d("PokemonListScreen", "Clicked on Pokémon with ID: $pokemonId")
-                    navController.navigate("pokemon_detail/$pokemonId")
+                    viewModel.setPokemonId(pokemonId)
+                    navController.navigate("pokemon_detail")
                 }
             )
         }

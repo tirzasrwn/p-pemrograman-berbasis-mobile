@@ -84,11 +84,8 @@ fun PokemonApp(
             composable("pokemon_list") {
                 PokemonListScreen(viewModel = viewModel, navController = navController)
             }
-            composable("pokemon_detail/{pokemonId}") { backStackEntry ->
-                val pokemonId = backStackEntry.arguments?.getString("pokemonId")?.toIntOrNull()
-                if (pokemonId != null) {
-                    PokemonDetailScreen(viewModel = viewModel, pokemonId = pokemonId)
-                }
+            composable("pokemon_detail") {
+                PokemonDetailScreen(viewModel = viewModel)
             }
         }
     }

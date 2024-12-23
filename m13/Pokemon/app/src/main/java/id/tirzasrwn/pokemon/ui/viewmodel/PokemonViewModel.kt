@@ -20,7 +20,8 @@ import java.io.IOException
 
 class PokemonViewModel(private val pokemonRepository: PokemonRepository) : ViewModel() {
     private var offset: Int = 0 // To track current offset
-    private val limit: Int = 10 // Fetch 10 more Pokémon each time
+    private val limit: Int = 10 // Fetch 10 more Pokemon each time
+    private var pokemonId: Int = 0
 
     var pokemonListUiState: PokemonListUiState by mutableStateOf(PokemonListUiState.Loading)
         private set
@@ -50,17 +51,25 @@ class PokemonViewModel(private val pokemonRepository: PokemonRepository) : ViewM
         }
     }
 
-    fun getPokemonDetail(id: Int) {
+    fun getPokemonDetail() {
         viewModelScope.launch {
             pokemonDetailUiState = PokemonDetailUiState.Loading
             pokemonDetailUiState = try {
-                PokemonDetailUiState.Success(pokemonRepository.getPokemonDetail(id))
+                PokemonDetailUiState.Success(pokemonRepository.getPokemonDetail(pokemonId))
             } catch (e: IOException) {
                 PokemonDetailUiState.Error
             } catch (e: HttpException) {
                 PokemonDetailUiState.Error
             }
         }
+    }
+
+    fun setPokemonId(id: Int) {
+        pokemonId = id
+    }
+
+    fun getPokemonId(): Int {
+        return pokemonId
     }
 
     companion object {
