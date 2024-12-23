@@ -1,5 +1,6 @@
 package id.tirzasrwn.pokemon
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -25,15 +26,21 @@ import id.tirzasrwn.pokemon.ui.screens.PokemonDetailScreen
 import id.tirzasrwn.pokemon.ui.screens.PokemonListScreen
 import id.tirzasrwn.pokemon.ui.viewmodel.PokemonViewModel
 
+/** enum values that represent the screens in the app */
+enum class PokemonScreen(@StringRes val title: Int) {
+    List(title = R.string.list_screen),
+    Detail(title = R.string.detail_screen),
+}
+
 @Composable
 fun PokemonAppBar(
-    currentScreen: String,
+    currentScreen: PokemonScreen,
     canNavigateBack: Boolean,
     navigateUp: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     TopAppBar(
-        title = { Text(currentScreen.substringBefore("/")) },
+        title = { Text(stringResource(currentScreen.title)) },
         colors =
         TopAppBarDefaults.mediumTopAppBarColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer
@@ -61,7 +68,7 @@ fun PokemonApp(
     val backStackEntry by navController.currentBackStackEntryAsState()
 
     // Get the name of the current screen
-    val currentScreen = backStackEntry?.destination?.route ?: "pokemon_list"
+    val currentScreen = PokemonScreen.valueOf(backStackEntry?.destination?.route ?: PokemonScreen.List.name)
 
     Scaffold(
         topBar = {
@@ -76,15 +83,15 @@ fun PokemonApp(
 
         NavHost(
             navController = navController,
-            startDestination = "pokemon_list",
+            startDestination = PokemonScreen.List.name,
             Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            composable("pokemon_list") {
+            composable(PokemonScreen.List.name) {
                 PokemonListScreen(viewModel = viewModel, navController = navController)
             }
-            composable("pokemon_detail") {
+            composable(PokemonScreen.Detail.name) {
                 PokemonDetailScreen(viewModel = viewModel)
             }
         }

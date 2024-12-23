@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import id.tirzasrwn.pokemon.PokemonScreen
 import id.tirzasrwn.pokemon.model.Pokemon
 import id.tirzasrwn.pokemon.ui.state.PokemonListUiState
 import id.tirzasrwn.pokemon.ui.viewmodel.PokemonViewModel
@@ -40,7 +41,7 @@ fun PokemonListScreen(viewModel: PokemonViewModel, navController: NavHostControl
                 onItemClick = { pokemonId ->
                     Log.d("PokemonListScreen", "Clicked on Pokémon with ID: $pokemonId")
                     viewModel.setPokemonId(pokemonId)
-                    navController.navigate("pokemon_detail")
+                    navController.navigate(PokemonScreen.Detail.name)
                 }
             )
         }
