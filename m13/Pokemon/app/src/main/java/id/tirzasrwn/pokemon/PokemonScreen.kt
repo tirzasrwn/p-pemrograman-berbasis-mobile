@@ -32,6 +32,7 @@ enum class PokemonScreen(@StringRes val title: Int) {
     Detail(title = R.string.detail_screen),
 }
 
+/** composable that displays the topBar and displays back button if back navigation is possible */
 @Composable
 fun PokemonAppBar(
     currentScreen: PokemonScreen,
@@ -39,6 +40,7 @@ fun PokemonAppBar(
     navigateUp: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    // TopAppBar with title and back button
     TopAppBar(
         title = { Text(stringResource(currentScreen.title)) },
         colors =
@@ -60,6 +62,7 @@ fun PokemonAppBar(
     )
 }
 
+// main composable that displays the topBar and displays back button if back navigation is possible
 @Composable
 fun PokemonApp(
     navController: NavHostController = rememberNavController()
@@ -80,7 +83,8 @@ fun PokemonApp(
         }
     ) { innerPadding ->
         val viewModel: PokemonViewModel = viewModel(factory = PokemonViewModel.Factory)
-
+        // learning material: navigation component
+        // define routes for each screen
         NavHost(
             navController = navController,
             startDestination = PokemonScreen.List.name,
@@ -88,9 +92,11 @@ fun PokemonApp(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
+            // define list screen
             composable(PokemonScreen.List.name) {
                 PokemonListScreen(viewModel = viewModel, navController = navController)
             }
+            // define detail screen
             composable(PokemonScreen.Detail.name) {
                 PokemonDetailScreen(viewModel = viewModel)
             }

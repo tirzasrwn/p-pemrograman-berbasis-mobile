@@ -17,12 +17,17 @@ import id.tirzasrwn.pokemon.model.Pokemon
 import id.tirzasrwn.pokemon.ui.state.PokemonListUiState
 import id.tirzasrwn.pokemon.ui.viewmodel.PokemonViewModel
 
+// learning material: mvvm architecture - view
+// learning material: ui state - ui layer
+// PokemonListScreen is a composable function that displays a list of Pokemon
 @Composable
 fun PokemonListScreen(viewModel: PokemonViewModel, navController: NavHostController) {
     val uiState = viewModel.pokemonListUiState
 
+    // fetch list when the screen is displayed
     when (uiState) {
         is PokemonListUiState.Loading -> {
+            // learning material: layout
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -40,6 +45,7 @@ fun PokemonListScreen(viewModel: PokemonViewModel, navController: NavHostControl
                     .padding(16.dp),
                 contentAlignment = Alignment.Center
             ) {
+                // learning material: element ui
                 Text(
                     text = "Something went wrong. Please try again.",
                     style = MaterialTheme.typography.bodyLarge,
@@ -68,29 +74,42 @@ fun PokemonListView(
     onLoadMore: () -> Unit,
     onItemClick: (Int) -> Unit
 ) {
+    // learning material: scrollable list
+    // LazyColumn is a vertically scrolling list that only composes and lays out its
+    // visible items
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(vertical = 8.dp, horizontal = 16.dp)
     ) {
+        // items is a composable function that takes a list of items and a lambda
         items(pokemons) { pokemon ->
+            // PokemonListItem is a composable function that displays a single Pokemon
             PokemonListItem(pokemon = pokemon, onItemClick = onItemClick)
         }
 
         item {
-            Text(
-                text = "Load More",
-                style = MaterialTheme.typography.bodyLarge,
+            // learning material: element ui input - button
+            // load more button
+            Button(
+                onClick = { onLoadMore() },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable { onLoadMore() }
                     .padding(vertical = 16.dp),
-                textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.primary
-            )
+                colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary)
+            ) {
+                Text(
+                    text = "Load More",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    textAlign = TextAlign.Center
+                )
+            }
+
         }
     }
 }
 
+// PokemonListItem is a composable function that displays a single Pokemon
 @Composable
 fun PokemonListItem(pokemon: Pokemon, onItemClick: (Int) -> Unit) {
     Box(

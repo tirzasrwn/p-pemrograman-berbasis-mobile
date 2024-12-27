@@ -17,11 +17,14 @@ import id.tirzasrwn.pokemon.model.PokemonDetail
 import id.tirzasrwn.pokemon.ui.state.PokemonDetailUiState
 import id.tirzasrwn.pokemon.ui.viewmodel.PokemonViewModel
 
+// learning material: mvvm architecture - view
+// learning material: ui state - ui layer
+// PokemonDetailScreen is a composable function that displays the details of a Pokemon
 @Composable
 fun PokemonDetailScreen(viewModel: PokemonViewModel) {
     val uiState = viewModel.pokemonDetailUiState
 
-    // Fetch details when the screen is displayed
+    // fetch details when the screen is displayed
     LaunchedEffect(viewModel.getPokemonId()) {
         viewModel.getPokemonDetail()
     }
@@ -41,7 +44,7 @@ fun PokemonDetailView(pokemonDetail: PokemonDetail) {
             .padding(16.dp)
             .verticalScroll(rememberScrollState())
     ) {
-        // Display Pokemon image
+        // display Pokemon image using asynchronous function
         SubcomposeAsyncImage(
             model = pokemonDetail.sprites.front_default,
             contentDescription = pokemonDetail.name,
@@ -50,6 +53,7 @@ fun PokemonDetailView(pokemonDetail: PokemonDetail) {
                 .height(240.dp),
             contentScale = ContentScale.Fit,
             loading = {
+                // learning material: layout
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
@@ -80,6 +84,7 @@ fun PokemonDetailView(pokemonDetail: PokemonDetail) {
             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
+                // learning material: element ui
                 Text(
                     text = pokemonDetail.name.capitalize(),
                     style = MaterialTheme.typography.headlineSmall,
@@ -95,7 +100,7 @@ fun PokemonDetailView(pokemonDetail: PokemonDetail) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Types section
+        // types section
         DetailSection(
             title = "Types",
             items = pokemonDetail.types.map { it.type.name.capitalize() },
@@ -104,7 +109,7 @@ fun PokemonDetailView(pokemonDetail: PokemonDetail) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Abilities section
+        // abilities section
         DetailSection(
             title = "Abilities",
             items = pokemonDetail.abilities.map {
@@ -115,7 +120,7 @@ fun PokemonDetailView(pokemonDetail: PokemonDetail) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Stats section
+        // stats section
         DetailSection(
             title = "Stats",
             items = pokemonDetail.stats.map { "${it.stat.name.capitalize()}: ${it.base_stat}" },
@@ -124,6 +129,7 @@ fun PokemonDetailView(pokemonDetail: PokemonDetail) {
     }
 }
 
+// TextDetail is a composable function that displays a single line of text with a label
 @Composable
 fun TextDetail(label: String, value: String) {
     Text(

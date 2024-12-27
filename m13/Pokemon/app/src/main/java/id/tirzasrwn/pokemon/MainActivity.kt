@@ -9,6 +9,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import id.tirzasrwn.pokemon.ui.theme.PokemonTheme
 
+// MainActivity is the entry point of the pokemon app.
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

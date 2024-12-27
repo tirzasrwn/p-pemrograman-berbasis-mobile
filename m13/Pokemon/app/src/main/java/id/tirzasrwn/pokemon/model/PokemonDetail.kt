@@ -1,5 +1,7 @@
 package id.tirzasrwn.pokemon.model
 
+// learning material: mvvm architecture - model - data object
+//
 data class PokemonDetail(
     val id: Int,
     val name: String,
