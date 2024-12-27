@@ -38,6 +38,7 @@ fun PokemonDetailScreen(viewModel: PokemonViewModel) {
 
 @Composable
 fun PokemonDetailView(pokemonDetail: PokemonDetail) {
+    // learning material: layout
     Column(
         modifier = Modifier
             .fillMaxSize()
